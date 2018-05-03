@@ -1,0 +1,308 @@
+\documentclass{beamer}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\usetheme{CambridgeUS}
+%\usecolortheme{dolphin}
+
+\usetheme[progressbar=frametitle]{metropolis}
+\setbeamertemplate{frame numbering}[fraction]
+\useoutertheme{metropolis}
+\useinnertheme{metropolis}
+\usefonttheme{metropolis}
+\setbeamercolor{background canvas}{bg=white}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usefonttheme[onlymath]{serif}
+\usepackage{bold-extra}
+\usepackage{tcolorbox}
+\usepackage{multimedia}
+
+\title[Maths with Python]{Using Python for Mathematics}
+\subtitle{Solving ODE's}
+\author{Michael Turner}
+\institute{\normalsize \textbf{Presentation Outcomes}:\\[4pt] To see the different ways in which Python can be applied to real mathematical problems and to demonstrate its power when used with situations where an analytical solution would be too difficult or impossible to find.}
+\date{12th December 2017}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}[t]{Introduction}\vspace{4pt}
+\begin{block}{What Is Python?}
+\vspace{0.5em}
+\begin{figure}
+\includegraphics<1>[width=9.8cm,height=6cm]{Python.png}
+\end{figure}
+\vspace{0.5em}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{Inspiration}
+\centering
+\includegraphics<1>[width=9.37cm,height=6.5cm]{Data.png}
+\end{frame}
+
+\begin{frame}[t]{Simple Problems}\metroset{block=fill}
+\begin{block}{Integrating}
+If we consider the problem: $u^{\prime}(t) = t^{2} + 4$, $u(0) = 1$
+\end{block}
+
+\pause {This equation can be solved by just integrating both sides w.r.t $x$:}
+\pause {\begin{align*}
+u(t) = \int_{0}^{t} \left(\tau^2 + 4\right)\,d\tau + u(0) = \frac{t^3}{3} + 4t + u(0)
+\end{align*}}
+\pause A more general form would be:
+\begin{align*}
+u(t) = u(0) + \int_{0}^{T} f(\tau)\,d\tau
+\end{align*}
+\pause \begin{block}{Trapezium Rule:}
+\vspace{-10pt}
+\begin{align*}
+u(t) \approx u(0) + \frac{h}{2}\left[y_0 + 2\sum_{k=1}^{n-1}y_k + y_n\right]
+\end{align*}
+\vspace{-10pt}
+\end{block}
+\end{frame}
+
+%where $u(0) = u_0$ and $u^{\prime} = f(t)$. The integral can be calculated using a discrete version of the continuous function $f(\tau)$ over the interval $\left[0,t\right]$ where $\tau_i = ih$ and $y_i = f(\tau_i)$ for $i = 0, 1,\ldots,n$. $n\geq1$ is an integer given and $h = \frac{T}{n}$. We can now write the Trapezoidal Rule into our general form:
+
+\begin{frame}[t]{Simple Problems}
+\begin{block}{Integrating}
+\begin{figure}
+\includegraphics<1>[width=10.7cm,height=6cm]{Graph1.png}
+\includegraphics<2>[width=10.7cm,height=6cm]{Graph2.png}
+\includegraphics<3>[width=10.7cm,height=6cm]{Graph3.png}
+\end{figure}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{Simple Problems}
+\begin{block}{Integrating}
+\vspace{0.5em}
+\small The Python code \texttt{The\_Simplest\_Case.py} finds a numerical solution where function $f$, time $t$, initial condition $u_0$ and time-steps $n$ are inputs:\\
+\pause \footnotesize \texttt{\textcolor{blue}{import} numpy \textcolor{blue}{as} np}
+
+\texttt{\textcolor{blue}{def} f(t):}\\
+\texttt{\quad \quad \textcolor{blue}{return} t*np.exp(t*t)}
+
+\texttt{\textcolor{blue}{def} integrate(f, T, n, u0):}\\
+\texttt{\quad \quad h = T/\textcolor{teal}{float}(n)}\\
+\texttt{\quad \quad t = np.linspace(0, T, n+1) \textcolor{orange}{\# From 0 to T with n strips}}\\
+\texttt{\quad \quad I = f(t[0])}\\
+\texttt{\quad \quad \textcolor{blue}{for} k \textcolor{blue}{in} \textcolor{teal}{range}(1, n): \textcolor{orange}{\# Goes from 1 to n-1}}\\
+\texttt{\quad \quad \quad \quad I += 2*f(t[k]) \textcolor{orange}{\# Sum of each element in f from 1 to n-1}}\\
+\texttt{\quad \quad I += f(t[-1]) \textcolor{orange}{\# Previous sum plus last element n}}\\
+\texttt{\quad \quad I *= (h/2) \textcolor{orange}{\# Multiply sum by h/2}}\\
+\texttt{\quad \quad I += u0 \textcolor{orange}{\# Previous sum plus the initial condition}}\\
+\texttt{\quad \quad \textcolor{blue}{return} \textcolor{teal}{float}(I)}\\
+\vspace{0.5em}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{Simple Problems}
+\normalsize The code can solve this equation: $u^{\prime}(t) = te^{t^2}$, $u(0) = 0$ at time $T = 2$ with $n = 100, 1000$:\\
+\pause \footnotesize \texttt{T = \textcolor{gray}{2} \textcolor{orange}{\# Set data}}\\
+\texttt{u0 = \textcolor{gray}{0}}\\
+\texttt{n = \textcolor{gray}{100}}\\
+\texttt{print("Numerical Solution of t*exp(t*t) is:",\\integrate(f, T, n, u0))}\\
+
+\pause \footnotesize \begin{tcolorbox}[colback=black!5,colframe=black!40!black,title=\texttt{Terminal}]
+\texttt{Numerical Solution of t*exp(t*t) is: 26.8154183398632}
+\end{tcolorbox}
+
+\footnotesize \begin{tcolorbox}[colback=black!5,colframe=black!40!black,title=\texttt{Terminal}]
+\texttt{Numerical Solution of t*exp(t*t) is: 26.79923847740996}
+\end{tcolorbox}
+\normalsize The exact solution is : $u(t) = \frac{1}{2}e^{2^2} + \frac{1}{2} \approx 27.7991$
+
+\end{frame}
+
+\begin{frame}[t]{Simple Problems}
+\begin{block}{Why Bother?}
+\vspace{0.5em}
+\centering
+\includegraphics<1>[width=4.5cm,height=6.75cm]{Trust.jpg}
+\vspace{0.5em}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{Scalar ODE's}\metroset{block=fill}
+\begin{block}{Abstract Form}
+We'll work with ODE's written as: $u^{\prime}(t) = f(u(t), t),$ $u(0) = u_0$
+\end{block}
+\pause Assume that $u(t)$ is a \textbf{scalar function}. \pause Then we refer to the above as a \textbf{scalar differential equation}.
+\pause \begin{block}{Forward Euler Method}
+\vspace{-15pt}
+\begin{align*}
+u_{k+1} = u_k + \Delta tf(u_k, t_k),\quad \text{where}\quad u(t_i) = u_i,\, i = 1, 2,\ldots, n.
+\end{align*}
+\vspace{-15pt}
+\end{block}
+\pause \begin{block}{Implementation}
+Example: $u^{\prime} = u,$ $u_0 = 1,$ $\Delta t = 0.1,$ $n = 10$
+\end{block}
+We can implement the \textbf{Forward Euler} method in a function in Python.
+\end{frame}
+
+\begin{frame}[t]{Scalar ODE's}\metroset{block=fill}
+\footnotesize 
+\texttt{\textcolor{blue}{import} matplotlib.pyplot \textcolor{blue}{as} plt}\\
+\texttt{\textcolor{blue}{import} numpy \textcolor{blue}{as} np}
+
+\texttt{\textcolor{blue}{def} f(t):}\\
+\texttt{\quad \quad \textcolor{blue}{return} u \textcolor{orange}{\# f(u[t[k]], t[k])}}
+
+\texttt{\textcolor{blue}{def} FEM(f, T, n, u0):}\\
+\texttt{\quad \quad t = np.zeros(n+1)}\\
+\texttt{\quad \quad u = np.zeros(n+1)}\\
+\texttt{\quad \quad u[0] = U0}\\
+\texttt{\quad \quad t[0] = 0}\\
+\texttt{\quad \quad dt = T/\textcolor{teal}{float}(n)}\\
+\texttt{\quad \quad \textcolor{blue}{for} k \textcolor{blue}{in} \textcolor{teal}{range}(0, n):}\\
+\texttt{\quad \quad \quad \quad t[k+1] = t[k] + dt}\\
+\texttt{\quad \quad \quad \quad u[k+1] = u[k] + dt*f(u[k], t[k])}\\
+\texttt{\quad \quad \textcolor{blue}{return} u, t}\\
+\href{https://www.youtube.com/watch?v=KrFvH1UrbPs}{\beamergotobutton{Link to video}}
+\end{frame}
+
+\begin{frame}[t]{Other Methods}\metroset{block=fill}
+\begin{block}{Heun's Method}
+\vspace{-15pt}
+\begin{align*}
+u_* &= u_k + \Delta tf(u_k, t_k)\\
+u_{k+1} &= u_k + \frac{1}{2}\Delta tf(u_k, t_k) + \frac{1}{2}\Delta tf(u_*, t_{k+1})
+\end{align*}
+\vspace{-15pt}
+\end{block}
+\pause \begin{block}{4th-Order Runge-Kutta Method}
+\vspace{-12pt}
+\begin{align*}
+u_{k+1} &= u_k + \frac{1}{6}\left(K_1 + 2K_2 + 2K_3 + K_4\right)\\
+K_1 &= \Delta tf(u_k, t_k)\\
+K_2 &= \Delta tf\left(u_k + \frac{1}{2}K_1, t_k + \frac{1}{2}\Delta t\right)\\
+K_3 &= \Delta tf\left(u_k + \frac{1}{2}K_2, t_k + \frac{1}{2}\Delta t\right)\\
+K_4 &= \Delta tf(u_k + K_3, t_k + \Delta t),\text{ where } \Delta t = t_{k+1} - t_k
+\end{align*}
+\vspace{-22pt}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{Practical Applications}\metroset{block=fill}
+\begin{block}{Logistic Growth}
+\vspace{-12pt}
+\begin{align*}
+u^{\prime}(t) = \alpha u(t)\left(1 - \frac{u(t)}{R}\right)
+\end{align*}
+\vspace{-15pt}
+\end{block}
+\vspace{-7pt}
+\centering
+\includegraphics<2>[width=8.4cm,height=6.3cm]{Logistic.png}
+\end{frame}
+
+\begin{frame}[t]{Practical Applications}
+\centering
+\includegraphics<1>[width=2.8cm,height=8.21cm]{springfig.png}
+\end{frame}
+
+\begin{frame}[t]{Practical Applications}
+\begin{block}{System of ODE's}
+An oscillating spring-mass is governed by a second order ODE:
+\vspace{-8pt}
+\begin{align*}
+m u^{\prime \prime} + \beta u^{\prime} + ku = F(t),\quad u(0) = u_0,\, u^{\prime}(0) = 0
+\end{align*}
+\vspace{-32pt}
+\pause \begin{align*}
+u^{(0)}(t) = u(t),\quad u^{(1)}(t) = u^{\prime}(t)
+\end{align*}
+\vspace{-30pt}
+\pause \begin{align*}
+\frac{d}{dt}u^{(0)}(t) = u^{(1)}(t),\quad \frac{d}{dt}u^{(1)}(t) = \frac{1}{m}\left(F(t) - \beta u^{(1)} - ku^{(0)}\right)
+\end{align*}
+\vspace{-25pt}
+\pause \begin{align*}
+u(t) &= \left(u^{(0)}(t), u^{(1)}(t)\right)\\
+f(t, u) &= \left(u^{(1)}, \frac{1}{m}\left(F(t) - \beta u^{(1)} - ku^{(0)}\right)\right)
+\end{align*}
+\end{block}
+\vspace{-15pt}
+\pause \begin{block}{Example}
+We shall test the code with another something simple:\\
+$u^{\prime\prime} + u = 0,$ $u(0) = 0,$ $u^{\prime}(0) = 1$ with solution $u(t) = \sin(t)$
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{Practical Applications}
+\centering
+\includegraphics<1>[width=9.33cm,height=7cm]{Eulersin.png}
+\end{frame}
+
+\begin{frame}[t]{Practical Applications}
+\centering
+\includegraphics<1>[width=9.33cm,height=7cm]{Kuttasin.png}
+\end{frame}
+
+\begin{frame}[t]{Practical Applications}
+\begin{block}{Advanced Problem}
+\vspace{-2pt}
+We have: $u^{\prime\prime} + u^{\prime} + u = \sin(t^2),$ $u(0) = 0,$ $u^{\prime}(0) = -1$
+\vspace{-7pt}
+\end{block}
+\centering
+\includegraphics<1>[width=9.33cm,height=7cm]{Kuttaadv.png}
+\end{frame}
+
+\begin{frame}[t]{Conclusion}
+\begin{block}{The Plan}
+\vspace{0.5em}
+\begin{itemize}
+\item I would like to take what I've shown you here today to the deepest level. To continue working with ODE's with Python to learn even more about how we can use it to our advantage by the end of the semester.
+\item I would then want to begin looking at another topic for the second semester which is about discrete calculus. Finding ways for a computer to differentiate a function, approximating a function. Finding the best way to build a tool that can be used efficiently and accurately. 
+\end{itemize}
+\vspace{0.5em}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{Conclusion}
+\begin{block}{Summary}
+\vspace{0.5em}
+\begin{itemize}
+\item This has all been done to see just how much we can accomplish with Python. How well it can be used for the mathematical problems we face in the real world.
+\item So far we have only scraped the surface. We have used Python to give us an answer to situations that would take hours to calculate numerically by hand in seconds.
+\item The world is becoming more reliant on technology than ever before. Having the skills to apply what we know through a computer language is in high demand. If you can't beat them then join them.
+\end{itemize}
+\vspace{0.5em}
+\end{block}
+\end{frame}
+
+\begin{frame}[t]{References}
+\begin{block}{Book}
+\begin{thebibliography}{99}
+Langtangen, H. P. (2012) \textit{A Primer on Scientific Programming with Python}. Midtown Manhattan: Springer International Publishing.
+\end{thebibliography}
+\end{block}
+\begin{block}{Images}
+\vspace{1pt}
+Geekboots, accessed December 2nd 2017 (https://www.geekboots.com/story/what-is-python-programming-and-why-you-should-learn-it)\\
+Deviant Art, htf-lover12, accessed December 2nd 2017 (https://htf-lover12.deviantart.com/art/Keep-calm-doctor-who-trust-me-317868064)\\
+Siri Chongchitnan, accessed December 2nd 2017
+\end{block}
+\end{frame}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Itemise things:
+
+\begin{enumerate}
+
+\item This is item number 1
+\item this is item number 2
+
+\end{enumerate}
