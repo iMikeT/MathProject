@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Heun Method", "Heun Method\Heun Method.pyproj", "{FCE2C8B7-B923-411F-A9FE-17D7794E924C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FCE2C8B7-B923-411F-A9FE-17D7794E924C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCE2C8B7-B923-411F-A9FE-17D7794E924C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {42B86593-E53A-49B5-8226-1769DD43FEBD}
+	EndGlobalSection
+EndGlobal
